@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'history',
     'login',
     'deals',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

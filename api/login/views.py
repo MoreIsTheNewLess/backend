@@ -1,10 +1,13 @@
 from django.shortcuts import render
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 import urllib.request, json
 
-# Create your views here.
-def index(request) :
-    return request
+class login(APIView):
+    def get(self, request, *args, **kw):
+        d = getToken(request.GET.get("username"),request.GET.get("password"))
+        return Response(d, status=status.HTTP_200_OK)
 
 def auth_url(username, password):
     return "https://corporateapiprojectwar.mybluemix.net/corporate_banking/mybank/authenticate_client?client_id={0}&password={1}".format(username, password)
