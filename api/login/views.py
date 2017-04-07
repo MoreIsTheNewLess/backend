@@ -18,4 +18,4 @@ def getToken(username, password) :
 
     with urllib.request.urlopen(secret_url) as url:
             data = json.loads(url.read().decode())
-            return data
+            return data[0]['token']
