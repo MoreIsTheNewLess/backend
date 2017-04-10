@@ -1,5 +1,5 @@
 import csv
-datafile = open(r'C:\Users\sskaushik\Desktop\testdata.csv', 'r')
+datafile = open(r'C:\Users\sskaushik\Desktop\hoolixyz\productsdata.csv', 'r')
 datareader = csv.reader(datafile,delimiter=';')
 data = []
 for row in datareader:
