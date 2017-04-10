@@ -19,6 +19,7 @@ def getAccountNumber(username):
 
     with urllib.request.urlopen(secret_url) as url:
         data = json.loads(url.read().decode())
+
     return data[0]['account_no']
 
 def transactionInforURL(username, token):
@@ -27,6 +28,26 @@ def transactionInforURL(username, token):
 def getTransactionHistory(username, password):
     token = getToken(username, password)
     secret_url = transactionInforURL(username, token)
+
+    with urllib.request.urlopen(secret_url) as url:
+        data = json.loads(url.read().decode())
+
+    return data
+
+def getTransactionHistoryNDays(username, password, n):
+    token = getToken(username, password)
+    secret_url = transactionInforURL(username, password)
+    secret_url += "&days=" + n
+
+    with urllib.request.urlopen(secret_url) as url:
+        data = json.loads(url.read().decode())
+
+    return data
+
+def getTransactionHistoryInterval(username, password, start_date, end_date):
+    token =  getToken(username, password)
+    secret_url = transactionInforURL(username, password)
+    secret_url += "&fromdate=" + start_date + "&todate=" + end_date
 
     with urllib.request.urlopen(secret_url) as url:
         data = json.loads(url.read().decode())
