@@ -32,3 +32,15 @@ def getTransactionHistory(username, password):
         data = json.loads(url.read().decode())
 
     return data
+
+def getTransactionHistoryRemarks(username, password):
+    data = getTransactionHistory(username, password)
+
+    remarks = []
+    if data[0]['code'] != 200:
+        return "ERROR"
+    data = data[1:]
+    for i in data:
+        remarks.append(i['remark'])
+
+    return remarks
