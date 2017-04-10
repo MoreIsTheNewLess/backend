@@ -6,9 +6,9 @@ import urllib.request, json
 
 # Create your views here.from django.shortcuts import render
 
-class login(APIView):
+class fundTransfer(APIView):
     def get(self, request, *args, **kw):
-        acc = getToken(request.GET.get("username"), request.GET.get("password"))
+        acc = getFundStatus(request.GET.get("username"), request.GET.get("password"), request.GET.get("sourceAcc"), request.GET.get("destAcc"), request.GET.get("amtPayed"))
         return Response(acc, status=status.HTTP_200_OK)
 
 def auth_url(username, password):
@@ -21,14 +21,11 @@ def getToken(username, password) :
         return data[0]['token']
 
 def getFundTransferURL(username, password, sourceAcc, destAcc, amtPayed):
-    return ""
+    token = getToken(username, password)
+    return "https://retailbanking.mybluemix.net/banking/icicibank/fundTransfer?client_id={0}&token={1}&srcAccount={2}&destAccount={3}&amt={4}&payeeDesc=NA&payeeId=NA&type_of_transaction=fuel".format(username, token,sourceAcc,destAcc, amtPayed)
 
-
-# def get_accurl(username):
-#     return "https://retailbanking.mybluemix.net/banking/icicibank/participantmapping?client_id={0}".format(username)
-#
-# def get_acc(username):
-#     acc_url = get_accurl(username)
-#     with urllib.request.urlopen(acc_url) as url:
-#         acc = json.loads(url.read().decode())
-#         return acc[0]['account_no']
+def getFundStatus(username, password, sourceAcc, destAcc, amtPayed):
+    fundURL = getFundTransferURL(username, password, sourceAcc, destAcc, amtPayed)
+    with urllib.request.urlopen(fundURL) as url:
+        data = json.loads(url.read().decode())
+        return data
