@@ -8,7 +8,7 @@ class login(APIView):
     def get(self, request, *args, **kw):
         d = getToken(request.GET.get("username"),request.GET.get("password"))
 
-        if autherize(d['username'], d['password'])
+        if len(d) > 0:
             return Response(d, status=status.HTTP_200_OK)
         return Response(d, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -22,9 +22,3 @@ def getToken(username, password) :
     with urllib.request.urlopen(secret_url) as url:
         data = json.loads(url.read().decode())
         return data[0]['token']
-
-def autherize(username, password):
-    data = getToken(username, password)
-    if data != ''
-        return True
-    return False
