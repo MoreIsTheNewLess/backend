@@ -18,4 +18,4 @@ Provided you have the above requirements installed, run:
 # Running
 Move into the `api` directory and run:  
 `python manage.py runserver`  
-An instance of the api will be accessable at `localhost:8000`
+An instance of the api will be accessible at `localhost:8000`
