@@ -1,4 +1,3 @@
-from django.shortcuts import render
 import urllib.request, json
 
 def authURL(username, password): #TODO : use one from login or get from frontend

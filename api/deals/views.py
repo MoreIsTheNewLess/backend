@@ -6,7 +6,7 @@ import urllib.request, json
 from sklearn import svm
 from sklearn.model_selection import train_test_split
 import csv
-
+from . import trans_hist
 
 clf = svm.SVC(gamma = 0.001, C = 100., probability = True)
 data = []
