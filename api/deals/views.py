@@ -57,7 +57,7 @@ print(clf.score(test_data, test_target))
 
 class deals(APIView):
     def get(self, request, *args, **kw):
-        secret_path = '/Users/sireesh/Documents/School/12A/Computers/'  #NOTE: Change to the path of backend folder on your computer
+        secret_path = 'Users\Siddharth Saha\Downloads\MoreIsTheNewLess'  #NOTE: Change to the path of backend folder on your computer
         day = int(request.GET.get("day"))
         month = int(request.GET.get("month"))
         BuyNLargeList = clf.predict_proba([day, month]).tolist()
