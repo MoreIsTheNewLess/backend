@@ -57,7 +57,7 @@ print(clf.score(test_data, test_target))
 
 class deals(APIView):
     def get(self, request, *args, **kw):
-        secret_path = 'Users\Siddharth Saha\Downloads\MoreIsTheNewLess'  #NOTE: Change to the path of backend folder on your computer
+        secret_path = '/home/chinmaya/code/mnl/'  #NOTE: Change to the path of backend folder on your computer
         day = int(request.GET.get("day"))
         month = int(request.GET.get("month"))
         BuyNLargeList = clf.predict_proba([day, month]).tolist()
@@ -80,4 +80,4 @@ class deals(APIView):
                     less = row
                     break
 
-        return Response(json.dumps({'Reminder!' : bestProduct, 'Best Deals' : less}), status = status.HTTP_200_OK)
+        return Response({'Reminder' : bestProduct, 'Best Deals' : {'category':less[0],'offer':less[1],'product':less[2]}}, status = status.HTTP_200_OK)
