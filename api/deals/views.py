@@ -18,13 +18,13 @@ test_target = []
 print("generating random test data...")
 for p in range(1,4):
     if p == 1:
-        prdt = "UX" #TODO : Don't do this
+        prdt = 'UX'
         i = 7
     elif p == 2:
-        prdt = "LB" #TODO : Don't do this
+        prdt = 'LB'
         i = 14
     elif p == 3:
-        prdt = "MW" #TODO : Don't do this
+        prdt = 'ML'
         i = 28
     for j in range(1,13):
         temp = [int(i), int(j)]
@@ -66,11 +66,11 @@ class deals(APIView):
         categories = { 'UX' : 'Groceries', 'LB' : 'Electricity', 'ML' : 'Fuel' }
 
         if BuyNLargeList[0][0] > BuyNLargeList[0][1] and BuyNLargeList[0][0] > BuyNLargeList[0][2]:#TODO: Better product matching
-            bestProduct = 'UX'
+            bestProduct = 'ML'
         elif BuyNLargeList[0][1] > BuyNLargeList[0][2]:
             bestProduct = 'LB'
         else:
-            bestProduct = 'ML'
+            bestProduct = 'UX'
 
         less = ''
         with open(secret_path + 'backend/api/supremereturn/SupremeDeals.csv', newline = '') as csvfile:
@@ -80,4 +80,4 @@ class deals(APIView):
                     less = row
                     break
 
-        return Response({'Reminder!' : bestProduct, 'Best Deals' : less}, status = status.HTTP_200_OK)
+        return Response(json.dumps({'Reminder!' : bestProduct, 'Best Deals' : less}), status = status.HTTP_200_OK)
