@@ -7,6 +7,7 @@ from sklearn import svm
 from sklearn.model_selection import train_test_split
 import csv
 from . import trans_hist
+import operator
 
 clf = svm.SVC(gamma = 0.001, C = 100., probability = True)
 data = []
@@ -15,17 +16,13 @@ target = []
 test_data = []
 test_target = []
 
+prods = ['LB','AR','MW','ML','UX']
+
 print("generating random test data...")
-for p in range(1,4):
-    if p == 1:
-        prdt = 'UX'
-        i = 7
-    elif p == 2:
-        prdt = 'LB'
-        i = 14
-    elif p == 3:
-        prdt = 'ML'
-        i = 28
+for c in range(len(prods)):
+    prdt = prods[c]
+    i = (c+1)*6
+
     for j in range(1,13):
         temp = [int(i), int(j)]
         if j % 2 == 0:
@@ -60,24 +57,39 @@ class deals(APIView):
         secret_path = '/home/chinmaya/code/mnl/'  #NOTE: Change to the path of backend folder on your computer
         day = int(request.GET.get("day"))
         month = int(request.GET.get("month"))
-        BuyNLargeList = clf.predict_proba([day, month]).tolist()
-        bestProduct = 0
+        prob_prods = clf.predict_proba([day, month]).tolist()
+        print(prob_prods)
+        prod_names = dict()
+        for i in range(len(prob_prods[0])):
+            prod_names[prods[i]] = prob_prods[0][i]
+        print(prod_names)
+        prod_names = sorted(prod_names.items(), key=operator.itemgetter(1), reverse=True)
+        prod_names = prod_names[:3]
+        print(prod_names)
 
-        categories = { 'UX' : 'Groceries', 'LB' : 'Electricity', 'ML' : 'Fuel' }
+        categories = { 'UX' : 'Groceries', 'LB' : 'Electricity', 'ML' : 'Fuel','AR' : 'Groceries','MW' : 'Groceries' }
 
-        if BuyNLargeList[0][0] > BuyNLargeList[0][1] and BuyNLargeList[0][0] > BuyNLargeList[0][2]:#TODO: Better product matching
-            bestProduct = 'ML'
-        elif BuyNLargeList[0][1] > BuyNLargeList[0][2]:
-            bestProduct = 'LB'
-        else:
-            bestProduct = 'UX'
-
-        less = ''
+        prob_deals = []
         with open(secret_path + 'backend/api/supremereturn/SupremeDeals.csv', newline = '') as csvfile:
             deals = csv.reader(csvfile, delimiter = ',', quotechar = '|')
             for row in deals:
-                if bestProduct in row[-1]:
-                    less = row
-                    break
+                for k,v in prod_names:
+                    if row[0] == categories[k]:
+                        temp = {}
+                        temp["category"] = row[0]
+                        temp["offer"] = row[1]
+                        temp["product"] = row[2]
+                        if row[2] == k:
+                            temp["score"] = 0 
+                        else:
+                            temp["score"] = 1
+                        prob_deals.append(temp)
 
-        return Response({'Reminder' : bestProduct, 'Best Deals' : {'category':less[0],'offer':less[1],'product':less[2]}}, status = status.HTTP_200_OK)
+        prob_deals.sort(key = lambda x: x["score"])
+        prob_deals = prob_deals[:5]
+
+        reminders = []
+        for k,_ in prod_names:
+            reminders.append(k)
+
+        return Response({'Reminders' : reminders, 'Best Deals' : prob_deals}, status = status.HTTP_200_OK)
